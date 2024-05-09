@@ -1,31 +1,46 @@
 package com.example;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
-import java.io.*;
-import java.nio.file.*;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.util.Base64;
 
 public class ImageServlet extends HttpServlet {
-    private static final String IMAGES_DIRECTORY = "resources/images"; // Замените на правильный путь
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String imageName = request.getParameter("imageName");
-        Path imagePath = Paths.get(IMAGES_DIRECTORY, imageName);
-
-        if (Files.exists(imagePath)) {
-            response.setContentType(getServletContext().getMimeType(imagePath.toString()));
-            try (InputStream in = Files.newInputStream(imagePath);
-                 OutputStream out = response.getOutputStream()) {
-                byte[] buffer = new byte[1024];
-                int bytesRead;
-                while ((bytesRead = in.read(buffer)) != -1) {
-                    out.write(buffer, 0, bytesRead);
-                }
-            }
-        } else {
-            response.setContentType("text/html");
-            response.getWriter().println("<html><body><h1>Image not found</h1></body></html>");
+        if (imageName == null || imageName.isEmpty()) {
+            request.setAttribute("error", "Название изображения не задано");
+            request.getRequestDispatcher("/imageForm.jsp").forward(request, response);
+            return;
         }
+
+        String imagePath = getServletContext().getRealPath("/images/" + imageName);
+        File imageFile = new File(imagePath);
+
+        if (!imageFile.exists()) {
+            request.setAttribute("error", "Изображение не обрнаружено по адресу: " + imagePath);
+            request.getRequestDispatcher("/imageForm.jsp").forward(request, response);
+            return;
+        }
+
+        // Отправляем HTML-страницу с изображением
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
+        out.println("<html><body>");
+        out.println("<h1>" + imageName + "</h1>");
+        out.println("<img src=\"data:image/jpeg;base64," + encodeFileToBase64Binary(imageFile) + "\" />");
+        out.println("</body></html>");
+    }
+
+    private String encodeFileToBase64Binary(File file) throws IOException {
+        byte[] bytes = Files.readAllBytes(file.toPath());
+        return Base64.getEncoder().encodeToString(bytes);
     }
 }

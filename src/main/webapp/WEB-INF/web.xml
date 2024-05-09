@@ -14,7 +14,7 @@
   <!-- Сопоставление сервлета с URL -->
   <servlet-mapping>
     <servlet-name>ImageServlet</servlet-name>
-    <url-pattern>/imageServlet</url-pattern>
+    <url-pattern>/ImageServlet</url-pattern>
   </servlet-mapping>
 
 </web-app>
