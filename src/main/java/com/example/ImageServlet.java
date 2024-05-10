@@ -14,16 +14,22 @@ public class ImageServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Получаем параметры запроса
         String imageName = request.getParameter("imageName");
+        String extensionFile = request.getParameter("extensionFile");
+
+        // Проверяем, что имя изображения не пустое
         if (imageName == null || imageName.isEmpty()) {
-            request.setAttribute("error", "Название изображения не задано");
+            request.setAttribute("error", "Название не задано");
             request.getRequestDispatcher("/imageForm.jsp").forward(request, response);
             return;
         }
 
-        String imagePath = getServletContext().getRealPath("/images/" + imageName);
+        // Формируем путь к изображению
+        String imagePath = "C:/Users/Mishpaha/Desktop/java/java-5-lab-in-1-semester/src/main/resources/images/" + imageName + extensionFile;
         File imageFile = new File(imagePath);
 
+        // Проверяем, существует ли файл
         if (!imageFile.exists()) {
             request.setAttribute("error", "Изображение не обрнаружено по адресу: " + imagePath);
             request.getRequestDispatcher("/imageForm.jsp").forward(request, response);
@@ -39,6 +45,7 @@ public class ImageServlet extends HttpServlet {
         out.println("</body></html>");
     }
 
+    // Метод для кодирования файла в Base64
     private String encodeFileToBase64Binary(File file) throws IOException {
         byte[] bytes = Files.readAllBytes(file.toPath());
         return Base64.getEncoder().encodeToString(bytes);
