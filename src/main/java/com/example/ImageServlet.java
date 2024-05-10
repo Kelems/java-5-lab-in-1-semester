@@ -6,12 +6,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.nio.file.Files;
-import java.util.Base64;
 
 public class ImageServlet extends HttpServlet {
-
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Получаем параметры запроса
@@ -20,7 +16,7 @@ public class ImageServlet extends HttpServlet {
 
         // Проверяем, что имя изображения не пустое
         if (imageName == null || imageName.isEmpty()) {
-            request.setAttribute("error", "Название не задано");
+            request.setAttribute("error", "Введите название требуемого изображения");
             request.getRequestDispatcher("/imageForm.jsp").forward(request, response);
             return;
         }
@@ -36,18 +32,8 @@ public class ImageServlet extends HttpServlet {
             return;
         }
 
-        // Отправляем HTML-страницу с изображением
-        response.setContentType("text/html");
-        PrintWriter out = response.getWriter();
-        out.println("<html><body>");
-        out.println("<h1>" + imageName + "</h1>");
-        out.println("<img src=\"data:image/jpeg;base64," + encodeFileToBase64Binary(imageFile) + "\" />");
-        out.println("</body></html>");
-    }
-
-    // Метод для кодирования файла в Base64
-    private String encodeFileToBase64Binary(File file) throws IOException {
-        byte[] bytes = Files.readAllBytes(file.toPath());
-        return Base64.getEncoder().encodeToString(bytes);
+        // Устанавливаем атрибут imageData в запросе и перенаправляем на imageShow.jsp
+        request.setAttribute("imageData", EncodeFile.encodeFileToBase64(imageFile));
+        request.getRequestDispatcher("/imageShow.jsp").forward(request, response);
     }
 }

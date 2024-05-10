@@ -16,6 +16,7 @@
   </properties>
 
   <dependencies>
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -29,33 +30,30 @@
       <version>3.1.0</version>
       <scope>provided</scope>
     </dependency>
+
   </dependencies>
 
   <build>
+
     <finalName>java-5-lab-in-1-semester</finalName>
     <plugins>
-
       <plugin>
-        <groupId>org.apache.tomcat.maven</groupId>
-        <artifactId>tomcat7-maven-plugin</artifactId>
-        <version>2.2</version>
-        <configuration>
-          <port>9090</port>
-        </configuration>
+      <groupId>org.apache.tomcat.maven</groupId>
+      <artifactId>tomcat7-maven-plugin</artifactId>
+      <version>2.2</version>
+      <configuration> <port>9090</port> </configuration>
       </plugin>
 
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
         <version>9.4.12.v20180830</version>
+
         <configuration>
           <scanIntervalSeconds>10</scanIntervalSeconds>
-          <webApp>
-            <contextPath>/${project.artifactId}</contextPath>
-          </webApp>
+          <webApp> <contextPath>/${project.artifactId}</contextPath> </webApp>
         </configuration>
       </plugin>
-
     </plugins>
 
     <resources>

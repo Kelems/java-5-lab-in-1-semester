@@ -5,13 +5,11 @@
 <web-app>
   <display-name>Archetype Created Web Application</display-name>
 
-  <!-- Добавление сервлета -->
   <servlet>
     <servlet-name>ImageServlet</servlet-name>
     <servlet-class>com.example.ImageServlet</servlet-class>
   </servlet>
 
-  <!-- Сопоставление сервлета с URL -->
   <servlet-mapping>
     <servlet-name>ImageServlet</servlet-name>
     <url-pattern>/ImageServlet</url-pattern>
